@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const cors = require('cors');
+app.use(cors());
 require("./database/config");
 const userModel = require("./model/User");
 const customReferences = require("./references/customReferences");
