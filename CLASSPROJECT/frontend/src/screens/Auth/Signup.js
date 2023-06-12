@@ -1,10 +1,52 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 const Signup = () => {
+  
+  // STATES 
   const [username, setUsername] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const navigate = useNavigate();
+
+  //FUNCTIONS
+  const userRegister = ()=>{
+    console.log("CLICKED");
+    const formData = new FormData();
+    formData.append("name",username);
+    formData.append("email",userEmail);
+    formData.append("password",userPassword);
+
+    axios({
+      method: "post",
+      url: "http://localhost:8888/signup",
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data"},
+    })
+      .then(function (response) {
+        if(response.data.save == true)
+        {
+          localStorage.setItem("user",JSON.stringify(response.data.newUser));
+          navigate('/');
+        }else
+        {
+          alert("Account cannot be created");
+        }
+      })
+      .catch(function (response) {
+        //handle error
+        console.log(response);
+      });
+  }
+
+  useEffect(()=>{
+    let currentUserStatus = localStorage.getItem('user');
+    if(currentUserStatus){
+      navigate('/');
+        }
+  },[]);
 
   return (
     <div className="container" style={{ marginTop: 100 }}>
@@ -56,27 +98,7 @@ const Signup = () => {
             className="btn btn-primary form-control"
             value="Signup"
             onClick={()=>{
-              console.log("CLICKED");
-              const formData = new FormData();
-              formData.append("name",username);
-              formData.append("email",userEmail);
-              formData.append("password",userPassword);
-
-              axios({
-                method: "post",
-                url: "http://localhost:8888/signup",
-                data: formData,
-                headers: { "Content-Type": "multipart/form-data"},
-              })
-                .then(function (response) {
-                  //handle success
-                  console.log(response);
-                })
-                .catch(function (response) {
-                  //handle error
-                  console.log(response);
-                });
-
+              userRegister();
             }}
           />
         </div>

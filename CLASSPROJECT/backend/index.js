@@ -10,7 +10,13 @@ const formData = customReferences.multer();
 app.post("/signup", formData.none(), async (request, response) => {
   const newUser = new userModel(request.body);
   const res = await newUser.save();
-  response.send(res);
+  if(res)
+  {
+    response.send({"save":true,"newUser":res});
+  }else
+  {
+    response.send({"save":false});
+  }
 });
 
 app.listen(8888);
