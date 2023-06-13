@@ -1,14 +1,14 @@
 import React from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { isUserLoggedIn } from "../../helpers/AuthHelper";
 
 const Navbar = () => {
   const currentUserStatus = isUserLoggedIn();
   const navigate = useNavigate();
-  const logoutUser = ()=>{
+  const logoutUser = () => {
     localStorage.clear();
-    navigate('/signup');
-  }
+    navigate("/login");
+  };
   return (
     <nav className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
       <div className="container-fluid">
@@ -40,17 +40,30 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/signup" onClick={()=>{logoutUser()}} className="link-item">
-                    Logout
+                  <Link
+                    to="/login"
+                    onClick={() => {
+                      logoutUser();
+                    }}
+                    className="link-item"
+                  >
+                    Logout ({JSON.parse(localStorage.getItem('user'))[0].email})
                   </Link>
                 </li>
               </React.Fragment>
             ) : (
-              <li className="nav-item">
-                <Link to="/signup" className="link-item">
-                  Signup
-                </Link>
-              </li>
+              <React.Fragment>
+                <li className="nav-item">
+                  <Link to="/signup" className="link-item">
+                    Signup
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/login" className="link-item">
+                    Login
+                  </Link>
+                </li>
+              </React.Fragment>
             )}
           </ul>
         </div>

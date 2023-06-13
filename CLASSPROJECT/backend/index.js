@@ -19,4 +19,16 @@ app.post("/signup", formData.none(), async (request, response) => {
   }
 });
 
+app.post("/login", formData.none(), async (request, response) => {
+  const res = await userModel.find(request.body);
+
+  if(res.length > 0)
+  {
+    response.send({"match":true,"loggedInUser":res});
+  }else
+  {
+    response.send({"match":false});
+  }
+});
+
 app.listen(8888);

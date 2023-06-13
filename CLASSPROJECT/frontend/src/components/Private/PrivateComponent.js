@@ -6,7 +6,7 @@ const PrivateComponent = () => {
     const currentUserStatus = isUserLoggedIn();
 
   return (
-    currentUserStatus ? <Outlet /> : <Navigate to="/signup" />
+    currentUserStatus ? <Outlet /> : <Navigate to="/login" />
   )
 }
 

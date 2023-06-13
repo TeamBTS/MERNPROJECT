@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 
-const Signup = () => {
+const Login = () => {
   
   // STATES 
   const [username, setUsername] = useState("");
@@ -12,26 +12,25 @@ const Signup = () => {
   const navigate = useNavigate();
 
   //FUNCTIONS
-  const userRegister = ()=>{
+  const userLogin = ()=>{
     const formData = new FormData();
-    formData.append("name",username);
     formData.append("email",userEmail);
     formData.append("password",userPassword);
 
     axios({
       method: "post",
-      url: "http://localhost:8888/signup",
+      url: "http://localhost:8888/login",
       data: formData,
       headers: { "Content-Type": "multipart/form-data"},
     })
       .then(function (response) {
-        if(response.data.save == true)
+        if(response.data.match == true)
         {
-          localStorage.setItem("user",JSON.stringify(response.data.newUser));
+          localStorage.setItem("user",JSON.stringify(response.data.loggedInUser));
           navigate('/');
         }else
         {
-          alert("Account cannot be created");
+          alert("No User found with this email and password");
         }
       })
       .catch(function (response) {
@@ -49,21 +48,8 @@ const Signup = () => {
 
   return (
     <div className="container" style={{ marginTop: 100 }}>
-      <h1>USER REGISTRATION</h1>
+      <h1>USER LOGIN</h1>
       <div className="form-group">
-        <div className="form-floating mb-3">
-          <input
-            name="name"
-            value={username}
-            onChange={(event) => {
-              setUsername(event.target.value);
-            }}
-            type="text"
-            className="form-control"
-            placeholder="Username"
-          />
-          <label>Username</label>
-        </div>
         <div className="form-floating mb-3">
           <input
             name="email"
@@ -96,18 +82,18 @@ const Signup = () => {
           <input
             type="button"
             className="btn btn-primary form-control"
-            value="Signup"
+            value="Login"
             onClick={()=>{
-              userRegister();
+              userLogin();
             }}
           />
         </div>
         <div style={{ marginTop: 40 }}>
-          <h4>Already have an account ? <Link to="/login">LOGIN</Link> </h4> 
+          <h4>Don't Have an account ? <Link to="/signup">SIGNUP</Link> </h4> 
         </div>
       </div>
     </div>
   );
 };
 
-export default Signup;
+export default Login;

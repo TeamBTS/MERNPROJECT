@@ -3,6 +3,7 @@ import Navbar from "./components/Navbars/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signup from "./screens/Auth/Signup";
 import PrivateComponent from "./components/Private/PrivateComponent";
+import Login from "./screens/Auth/Login";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/logout" element={<h1>Logout</h1>} />
           </Route>
           <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </div>
