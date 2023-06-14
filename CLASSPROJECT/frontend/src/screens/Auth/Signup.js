@@ -17,6 +17,7 @@ const Signup = () => {
     formData.append("name",username);
     formData.append("email",userEmail);
     formData.append("password",userPassword);
+    formData.append("isAdmin",false);
 
     axios({
       method: "post",

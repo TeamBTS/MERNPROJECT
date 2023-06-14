@@ -1,34 +1,5 @@
-const express = require("express");
-const app = express();
-const cors = require('cors');
-app.use(cors());
+const customReferences = require('./references/customReferences');
 require("./database/config");
-const userModel = require("./model/User");
-const customReferences = require("./references/customReferences");
-const formData = customReferences.multer();
+require("./controllers/Auth/AuthController");
 
-app.post("/signup", formData.none(), async (request, response) => {
-  const newUser = new userModel(request.body);
-  const res = await newUser.save();
-  if(res)
-  {
-    response.send({"save":true,"newUser":res});
-  }else
-  {
-    response.send({"save":false});
-  }
-});
-
-app.post("/login", formData.none(), async (request, response) => {
-  const res = await userModel.find(request.body);
-
-  if(res.length > 0)
-  {
-    response.send({"match":true,"loggedInUser":res});
-  }else
-  {
-    response.send({"match":false});
-  }
-});
-
-app.listen(8888);
+customReferences.app.listen(8888);
