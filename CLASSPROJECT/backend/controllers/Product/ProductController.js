@@ -2,8 +2,7 @@ const productModel = require("../../model/Product");
 const customReferences = require("../../references/customReferences");
 const formData = customReferences.multer();
 
-
-customReferences.app.post("/addProduct", formData.none(), async (request, response) => {
+customReferences.app.post("/createProduct", formData.none(), async (request, response) => {
     const newProduct = new productModel(request.body);
     const res = await newProduct.save();
     if(res)
@@ -20,9 +19,9 @@ customReferences.app.post("/addProduct", formData.none(), async (request, respon
   
     if(res.length > 0)
     {
-      response.send({"match":true,"allProducts":res});
+      response.send({"allProducts":res});
     }else
     {
-      response.send({"match":false});
+      response.send({"allProducts":[]});
     }
   });

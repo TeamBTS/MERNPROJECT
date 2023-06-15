@@ -7,6 +7,8 @@ import PrivateComponent from "./components/Private/PrivateComponent";
 import Login from "./screens/Auth/Login";
 import { isUserLoggedIn } from "./helpers/AuthHelper";
 import React, { useEffect, useState } from "react";
+import AddProduct from "./screens/Admin/AddProduct";
+import ViewProducts from "./screens/Admin/ViewProducts";
 
 function App() {
   const currentUser = isUserLoggedIn();
@@ -22,17 +24,17 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        {isAdmin ? 
+        {/* {isAdmin ? 
           <Navbar />
          :
           <CustomerNavbar />
-        }
+        } */}
         <Routes>
           <Route element={<PrivateComponent />}>
           {isAdmin ?
             <React.Fragment> 
-              <Route path="/" element={<h1>ALL PRODUCTS</h1>} />
-              <Route path="/addProducts" element={<h1>Add PRODUCTS</h1>} />
+              <Route path="/" element={<ViewProducts />} />
+              <Route path="/addProducts" element={<AddProduct />} />
               <Route path="/updateProducts" element={<h1>Update PRODUCTS</h1>} />
               <Route path="/profile" element={<h1>Profile</h1>} />
               <Route path="/logout" element={<h1>Logout</h1>} />
