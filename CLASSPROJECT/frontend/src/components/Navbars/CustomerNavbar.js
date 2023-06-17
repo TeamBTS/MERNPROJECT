@@ -47,7 +47,7 @@ const CustomerNavbar = () => {
                     }}
                     className="link-item"
                   >
-                    Logout ({JSON.parse(localStorage.getItem('user'))[0].email})
+                    Logout ({JSON.parse(localStorage.getItem('user')).email})
                   </Link>
                 </li>
               </React.Fragment>

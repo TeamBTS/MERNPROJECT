@@ -9,6 +9,7 @@ import { isUserLoggedIn } from "./helpers/AuthHelper";
 import React, { useEffect, useState } from "react";
 import AddProduct from "./screens/Admin/AddProduct";
 import ViewProducts from "./screens/Admin/ViewProducts";
+import EditProduct from "./screens/Admin/EditProduct";
 
 function App() {
   const currentUser = isUserLoggedIn();
@@ -17,7 +18,7 @@ function App() {
   useEffect(()=>{
     if(currentUser)
     {
-      let currentUserType = JSON.parse(localStorage.getItem('user'))[0].isAdmin;
+      let currentUserType = JSON.parse(localStorage.getItem('user')).isAdmin;
       setIsAdmin(currentUserType);
     }
   },[]);
@@ -38,6 +39,9 @@ function App() {
               <Route path="/updateProducts" element={<h1>Update PRODUCTS</h1>} />
               <Route path="/profile" element={<h1>Profile</h1>} />
               <Route path="/logout" element={<h1>Logout</h1>} />
+              <Route path="/deleteSingleProduct" element={<h1>DELETE PRODUCT</h1>} />
+              <Route path="/editSingleProduct" element={<EditProduct />} />
+              
             </React.Fragment>
           :
           <React.Fragment> 

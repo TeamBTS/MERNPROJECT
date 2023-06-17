@@ -5,6 +5,8 @@ import Navbar from "../../components/Navbars/Navbar";
 
 const ViewProducts = () => {
     const [allProducts,setAllProducts] = useState([]);
+    const navigate = useNavigate();
+
     const viewAllProducts = ()=>{
    
         axios({
@@ -15,6 +17,33 @@ const ViewProducts = () => {
           .then(function (response) {
             console.log(response.data);
             setAllProducts(response.data.allProducts);
+            
+          })
+          .catch(function (response) {
+            //handle error
+            console.log(response);
+          });
+      }      
+    const deleteSingleProduct = (singleProduct)=>{
+        // alert(singleProduct._id);  
+      const formData = new FormData();
+        formData.append("id",singleProduct._id);
+
+        axios({
+          method: "post",
+          url: "http://localhost:8888/deleteSingleProduct",
+          data:formData,
+          headers: { "Content-Type": "multipart/form-data"},
+        })
+          .then(function (response) {
+            if(response.data.delete == true)
+            {
+              navigate("/");
+            }else
+            {
+             
+              navigate("/");
+            }
             
           })
           .catch(function (response) {
@@ -51,9 +80,10 @@ const ViewProducts = () => {
             <td>{item.product_description.substr(0,100)}...</td>
             <td>{item.product_category}</td>
             <td>
-                <Link className="btn btn-sm btn-danger mb-1">DELETE</Link><br/>
-                <Link className="btn btn-sm btn-primary mb-1">EDIT</Link><br/>
-                <Link className="btn btn-sm btn-success mb-1">SHOW</Link><br/>
+                <Link to="/" onClick={()=>{
+                  deleteSingleProduct(item);
+                }} className="btn btn-sm btn-danger mb-1">DELETE</Link><br/>
+                <Link to={`/editSingleProduct?id=${item._id}`} className="btn btn-sm btn-primary mb-1">EDIT</Link><br/>
             </td>
           </tr> 
         )):

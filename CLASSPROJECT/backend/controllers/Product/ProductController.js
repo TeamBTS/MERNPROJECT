@@ -25,3 +25,27 @@ customReferences.app.post("/createProduct", formData.none(), async (request, res
       response.send({"allProducts":[]});
     }
   });
+  customReferences.app.post("/deleteSingleProduct", formData.none(), async (request, response) => {
+    
+    const res = await productModel.deleteOne({"_id":request.body.id});
+  
+    if(res != null)
+    {
+      response.send({"delete":true});
+    }else
+    {
+      response.send({"delete":false});
+    }
+  });
+  customReferences.app.get("/editSingleProduct:id", formData.none(), async (request, response) => {
+    response.send(request.params.id);
+    // const res = await productModel.findOne({"_id":request.params.id});
+  
+    // if(res != null)
+    // {
+    //   response.send({"singleProduct":res});
+    // }else
+    // {
+    //   response.send({"singleProduct":[]});
+    // }
+  });

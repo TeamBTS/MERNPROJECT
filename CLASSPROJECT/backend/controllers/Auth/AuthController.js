@@ -16,9 +16,9 @@ customReferences.app.post("/signup", formData.none(), async (request, response) 
   });
   
   customReferences.app.post("/login", formData.none(), async (request, response) => {
-    const res = await userModel.find(request.body);
+    const res = await userModel.findOne(request.body);
   
-    if(res.length > 0)
+    if(res != null)
     {
       response.send({"match":true,"loggedInUser":res});
     }else
