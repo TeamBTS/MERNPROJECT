@@ -1,89 +1,96 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbars/Navbar";
+import CustomerNavbar from "../../../components/Navbars/CustomerNavbar";
 
-const ViewProducts = () => {
-    const [allProducts,setAllProducts] = useState([]);
+const ViewCart = () => {
+    const [allCartItems,setAllCartItems] = useState([]);
+    const [cartTotalAmount,setCartTotalAmount] = useState(0);
     const navigate = useNavigate();
 
-    const viewAllProducts = ()=>{
-   
+    const viewMyCart = ()=>{
+        const userId = JSON.parse(localStorage.getItem('user'))._id;
+        const formData = new FormData();
+        formData.append("user_id",userId);
+
         axios({
           method: "post",
-          url: "http://localhost:8888/viewProducts",
+          url: "http://localhost:8888/viewCarts",
+          data:formData,
           headers: { "Content-Type": "multipart/form-data"},
         })
           .then(function (response) {
             console.log(response.data);
-            setAllProducts(response.data.allProducts);
-            
+            setAllCartItems(response.data.allCarts);
+            setCartTotalAmount(response.data.totalAmountOfCart);  
           })
           .catch(function (response) {
-            //handle error
             console.log(response);
           });
-      }      
-    const deleteSingleProduct = (singleProduct)=>{
+      }     
+
+    const deleteSingleCart = (singleCart)=>{
         // alert(singleProduct._id);  
       const formData = new FormData();
-        formData.append("id",singleProduct._id);
+        formData.append("id",singleCart._id);
 
         axios({
           method: "post",
-          url: "http://localhost:8888/deleteSingleProduct",
+          url: "http://localhost:8888/deleteSingleCart",
           data:formData,
           headers: { "Content-Type": "multipart/form-data"},
         })
           .then(function (response) {
             if(response.data.delete == true)
             {
-              navigate("/");
+              navigate("/carts");
             }else
             {
              
-              navigate("/");
+              navigate("/carts");
             }
             
           })
           .catch(function (response) {
-            //handle error
             console.log(response);
           });
       }      
-  useEffect(()=>{
-    viewAllProducts();
+  
+   useEffect(()=>{
+    viewMyCart();
   },[]);  
+
+
   return (
     <React.Fragment>
-      <Navbar />
-      <h1 className="mt-5 mb-5">All Products</h1>
-      <Link to="/addProducts"><span className="btn btn-success btn-block">CREATE NEW PRODUCT</span></Link>
+      <CustomerNavbar />
+      <h1 className="mt-5 mb-5">My Cart</h1>
       <table className="table table-hover">
         <thead>
           <tr className="table-primary">
             <th scope="col">#</th>
             <th scope="col">Title</th>
             <th scope="col">Price</th>
+            <th scope="col">Qty</th>
             <th scope="col">Description</th>
             <th scope="col">Category</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
-        {allProducts.length > 0 ? 
-            allProducts.map((item,index)=>(
+        {allCartItems.length > 0 ? 
+            allCartItems.map((item,index)=>(
             <tr>
             <th scope="row">{index+1}</th>
-            <td>{item.product_title}</td>
-            <td>{item.product_price}</td>
-            <td>{item.product_description.substr(0,100)}...</td>
-            <td>{item.product_category}</td>
+            <td>{item.product_id.product_title}</td>
+            <td>{item.product_id.product_price}</td>
+            <td>{item.qty}</td>
+            <td>{item.product_id.product_description.substr(0,100)}...</td>
+            <td>{item.product_id.product_category}</td>
             <td>
                 <Link to="/" onClick={()=>{
-                  deleteSingleProduct(item);
-                }} className="btn btn-sm btn-danger mb-1">DELETE</Link><br/>
-                <Link to={`/editSingleProduct/${item._id}`} className="btn btn-sm btn-primary mb-1">EDIT</Link><br/>
+                  deleteSingleCart(item);
+                }} className="btn btn-sm btn-danger mb-1">Delete</Link><br/>
             </td>
           </tr> 
         )):
@@ -95,8 +102,14 @@ const ViewProducts = () => {
           
         </tbody>
       </table>
+      <div className="row">
+        <div className="col-md-10">
+          <h4 style={{textAlign:"right"}}>TOTAL AMOUNT : </h4>
+        </div>
+        <div className="col-md-2"><h5>{cartTotalAmount}</h5></div>
+      </div>
     </React.Fragment>
   );
 };
 
-export default ViewProducts;
+export default ViewCart;

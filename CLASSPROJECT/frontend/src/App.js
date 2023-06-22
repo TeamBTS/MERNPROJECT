@@ -10,6 +10,8 @@ import React, { useEffect, useState } from "react";
 import AddProduct from "./screens/Admin/AddProduct";
 import ViewProducts from "./screens/Admin/ViewProducts";
 import EditProduct from "./screens/Admin/EditProduct";
+import ViewAllProducts from "./screens/Customer/ViewAllProducts";
+import ViewCart from "./screens/Customer/Cart/ViewCart";
 
 function App() {
   const currentUser = isUserLoggedIn();
@@ -40,15 +42,15 @@ function App() {
               <Route path="/profile" element={<h1>Profile</h1>} />
               <Route path="/logout" element={<h1>Logout</h1>} />
               <Route path="/deleteSingleProduct" element={<h1>DELETE PRODUCT</h1>} />
-              <Route path="/editSingleProduct" element={<EditProduct />} />
+              <Route path="/editSingleProduct/:id" element={<EditProduct />} />
               
             </React.Fragment>
           :
           <React.Fragment> 
-            <Route path="/" element={<h1>CUSTOMER PRODUCTS</h1>} />
-            <Route path="/addProducts" element={<h1>Add PRODUCTS</h1>} />
-            <Route path="/updateProducts" element={<h1>Update PRODUCTS</h1>} />
-            <Route path="/profile" element={<h1>Profile</h1>} />
+            <Route path="/" element={<ViewAllProducts />} />
+            <Route path="/carts" element={<ViewCart />} />
+            <Route path="/customerOrders" element={<h1>Update PRODUCTS</h1>} />
+            <Route path="/customerProfile" element={<h1>Profile</h1>} />
             <Route path="/logout" element={<h1>Logout</h1>} />
           </React.Fragment>
           }

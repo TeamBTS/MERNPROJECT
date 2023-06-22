@@ -1,21 +1,25 @@
 import React, { useState,useEffect } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbars/Navbar";
 
 
 const EditProduct = () => {
   
   // STATES 
+  const [productId, setProductId] = useState(0);
   const [productTitle, setProductTitle] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productCategory, setProductCategory] = useState("");
   const navigate = useNavigate();
+  const params = useParams();
+
 
   //FUNCTIONS
-  const createProduct = ()=>{
+  const updateSingleProduct = ()=>{
     const formData = new FormData();
+    formData.append("id",productId);
     formData.append("product_title",productTitle);
     formData.append("product_price",productPrice);
     formData.append("product_description",productDescription);
@@ -23,17 +27,18 @@ const EditProduct = () => {
 
     axios({
       method: "post",
-      url: "http://localhost:8888/createProduct",
+      url: "http://localhost:8888/updateSingleProduct",
       data: formData,
       headers: { "Content-Type": "multipart/form-data"},
     })
       .then(function (response) {
-        if(response.data.save == true)
+        
+        if(response.data.update == true)
         {
           navigate('/');
         }else
         {
-          alert("Unable to create product. Please try again later.");
+          alert("Unable to update product. Please try again later.");
         }
       })
       .catch(function (response) {
@@ -41,6 +46,39 @@ const EditProduct = () => {
         console.log(response);
       });
   }
+
+  const getSingleProductDetail = ()=>{
+    const formData = new FormData();
+    formData.append("id",params.id);
+    axios({
+      method: "post",
+      url: "http://localhost:8888/editSingleProduct",
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data"},
+    })
+      .then(function (response) {
+        console.log(response.data);
+        if(response.data.match == true)
+        {
+          setProductId(response.data.singleProduct._id);
+          setProductTitle(response.data.singleProduct.product_title)
+          setProductPrice(response.data.singleProduct.product_price)
+          setProductDescription(response.data.singleProduct.product_description)
+          setProductCategory(response.data.singleProduct.product_category)
+        }else
+        {
+          alert("Unable to fetch product. Please try again later.");
+        }
+      })
+      .catch(function (response) {
+        //handle error
+        console.log(response);
+      });
+  }
+
+  useEffect(()=>{
+    getSingleProductDetail();
+  },[]);
 
   return (
     <React.Fragment>
@@ -101,9 +139,9 @@ const EditProduct = () => {
             <input
               type="button"
               className="btn btn-primary form-control"
-              value="Create Product"
+              value="Update Product"
               onClick={()=>{
-                  createProduct();
+                updateSingleProduct();
               }}
             />
           </div>
