@@ -2,6 +2,8 @@ const cartModel = require("../../model/Cart");
 const productModel = require("../../model/Product");
 const customReferences = require("../../references/customReferences");
 const formData = customReferences.multer();
+const stripe = require('stripe')('');
+
 
 customReferences.app.post("/createCart", formData.none(), async (request, response) => {
  
@@ -18,7 +20,7 @@ customReferences.app.post("/createCart", formData.none(), async (request, respon
     }
   });
   
-  customReferences.app.post("/viewCarts", formData.none(), async (request, response) => {
+customReferences.app.post("/viewCarts", formData.none(), async (request, response) => {
     const res = await cartModel.find({"user_id":request.body.user_id}).populate('product_id').populate('user_id');
     let totalAmountOfCart = 0;
     
@@ -36,7 +38,7 @@ customReferences.app.post("/createCart", formData.none(), async (request, respon
 
   });
 
-  customReferences.app.post("/deleteSingleCart", formData.none(), async (request, response) => {
+customReferences.app.post("/deleteSingleCart", formData.none(), async (request, response) => {
     
     const res = await cartModel.deleteOne({"_id":request.body.id});
   
@@ -48,3 +50,41 @@ customReferences.app.post("/createCart", formData.none(), async (request, respon
       response.send({"delete":false});
     }
   });
+
+customReferences.app.post("/create_checkout_session", formData.none(), async (request, response) => {
+  
+  const res = await cartModel.find({"user_id":request.body.user_id}).populate('product_id').populate('user_id');
+  let totalAmountOfCart = 0;
+  let cartItemsForStripe = [];  
+    if(res.length > 0)
+    {
+      
+      res.map((item)=>{
+          totalAmountOfCart=Number(totalAmountOfCart)+Number(item.amount);
+          cartItemsForStripe.push(
+            {'price_data':{
+                    'currency' : 'USD',
+                    'unit_amount' : item.amount * 100,
+                    'product_data' : {
+                        'name' : item.product_id.product_title,
+                    },
+                  },
+                'quantity' :item.qty,
+            }
+          );
+      });
+
+     const session = await stripe.checkout.sessions.create({
+      success_url: 'http://localhost:3000/success',
+      cancel_url: 'http://localhost:3000/carts',
+      line_items: cartItemsForStripe,
+      mode: 'payment',
+      });
+
+      response.send({"url":session.url});
+    }else
+    {
+      response.send({"url":"noCart"});
+    }
+    
+  });  
